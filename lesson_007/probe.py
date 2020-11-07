@@ -78,21 +78,23 @@ class House:
         return 'В доме еды осталось {}, денег осталось {}'.format(self.food, self.money)
 
 
-beavis = Man(name='Бивис')
-butthead = Man(name='Батхед')
+citizens = [
+    Man(name='Бивис'),
+    Man(name='Батхед'),
+    Man(name='Кенни'),
+]
 
 my_sweet_home = House()
-
-beavis.go_into_the_house(house=my_sweet_home)
-butthead.go_into_the_house(house=my_sweet_home)
+for citizen in citizens:
+    citizen.go_into_the_house(house=my_sweet_home)
 
 for day in range(1, 366):
     print('===================== день {} ====================='.format(day))
-    beavis.act()
-    butthead.act()
+    for citizen in citizens:
+        citizen.act()
     print('------------------ в конце дня -------------------')
-    print(beavis)
-    print(butthead)
+    for citizen in citizens:
+        print(citizen)
     print(my_sweet_home)
 
 # Создадим двух людей, живущих в одном доме - Бивиса и Батхеда
