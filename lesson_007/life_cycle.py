@@ -1,4 +1,4 @@
-from random import randint
+import random
 
 # Реализуем модель человека.
 # Человек может есть, работать, играть, ходить в магазин.
@@ -47,13 +47,13 @@ class Man:
     def go_into_the_house(self, house):
         self.house = house
         self.fullness -= 10
-        cprint('{} въехал в дом!!!'.format(self.name), color='cyan')
+        cprint('{} въехал в дом!!!'.format(self.name), color='grey', on_color='on_white')
 
     def act(self):
         if self.fullness <= 0:
             cprint('{} умер...'.format(self.name), color='red')
             return
-        dice = randint(1, 6)
+        dice = random.randint(1, 6)
         if self.fullness < 20:
             self.eat()
         elif self.house.food < 10:
@@ -78,6 +78,59 @@ class House:
         return 'В доме еды осталось {}, денег осталось {}'.format(self.food, self.money)
 
 
+class Animal:
+
+    def __init__(self, name):
+        self.name = name
+        self.house = None
+        self.owner = None
+        self.stamina = 50
+        self.fullness = 50
+
+    def __str__(self):
+        return 'Сытость {}а - {}, вынослиивость - {}'.format(
+            self.name, self.fullness, self.stamina)
+
+    def go_into_the_house(self, house):
+        self.house = house
+        cprint('Ребята завели кота и назвали его {}!'.format(self.name), color='grey', on_color='on_white')
+
+    def eat(self):
+        self.fullness += 20
+        self.owner = random.choice(citizens)
+        cprint('{} покормил {}а'.format(self.owner.name, self.name), color='cyan')
+
+    def play(self):
+        self.stamina -= 10
+        self.fullness -= 10
+        self.owner = random.choice(citizens)
+        cprint('{} поиграл с {}ом'.format(self.owner.name, self.name), color='cyan')
+
+    def catch(self):
+        self.stamina -= 10
+        self.fullness -= 10
+        cprint('{} ловил мышей, но ни одной не поймал'.format(self.name), color='cyan')
+
+    def sleep(self):
+        self.stamina += 20
+        cprint('{} весь день спал'.format(self.name), color='cyan')
+
+    def act(self):
+        if self.fullness <= 0:
+            cprint('{} умер...'.format(self.name), color='red')
+            return
+        if self.fullness < 20:
+            self.eat()
+        elif self.stamina < 20:
+            self.sleep()
+        else:
+            dice = random.randint(0, 2)
+            if dice == 0:
+                self.catch()
+            else:
+                self.play()
+
+
 citizens = [
     Man(name='Бивис'),
     Man(name='Батхед'),
@@ -88,13 +141,18 @@ my_sweet_home = House()
 for citizen in citizens:
     citizen.go_into_the_house(house=my_sweet_home)
 
-for day in range(1, 366):
+cat = Animal(name='Мурзик')
+cat.go_into_the_house(house=my_sweet_home)
+
+for day in range(1, 21):
     print('===================== день {} ====================='.format(day))
     for citizen in citizens:
         citizen.act()
+    cat.act()
     print('------------------ в конце дня -------------------')
     for citizen in citizens:
         print(citizen)
+    print(cat)
     print(my_sweet_home)
 
 # Создадим двух людей, живущих в одном доме - Бивиса и Батхеда
