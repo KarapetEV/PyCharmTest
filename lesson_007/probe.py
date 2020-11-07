@@ -86,7 +86,7 @@ my_sweet_home = House()
 beavis.go_into_the_house(house=my_sweet_home)
 butthead.go_into_the_house(house=my_sweet_home)
 
-for day in range(1, 21):
+for day in range(1, 366):
     print('===================== день {} ====================='.format(day))
     beavis.act()
     butthead.act()
