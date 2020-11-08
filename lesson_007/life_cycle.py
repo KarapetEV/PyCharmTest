@@ -14,6 +14,7 @@ class Man:
         self.name = name
         self.fullness = 50
         self.house = None
+        self.cat = None
 
     def __str__(self):
         return 'Я - {}, сытость {}'.format(
@@ -29,7 +30,7 @@ class Man:
 
     def work(self):
         cprint('{} сходил на работу'.format(self.name), color='blue')
-        self.house.money += 50
+        self.house.money += 150
         self.fullness -= 10
 
     def watch_MTV(self):
@@ -49,6 +50,20 @@ class Man:
         self.fullness -= 10
         cprint('{} въехал в дом!!!'.format(self.name), color='grey', on_color='on_white')
 
+    def get_cat(self, cat):
+        self.cat = cat
+        self.cat.go_into_the_house(self.house)
+
+    def buy_whiskas(self):
+        self.house.cat_food += 50
+        self.house.money -= 50
+        cprint('{} купил кошачий корм'.format(self.name), color='yellow')
+
+    def clean(self):
+        self.house.dirt -= 100
+        self.fullness -= 20
+        cprint('{} сделал уборку в доме'.format(self.name), color='yellow')
+
     def act(self):
         if self.fullness <= 0:
             cprint('{} умер...'.format(self.name), color='red')
@@ -60,6 +75,10 @@ class Man:
             self.shopping()
         elif self.house.money < 50:
             self.work()
+        elif self.house.cat_food < 10:
+            self.buy_whiskas()
+        elif self.house.dirt > 100:
+            self.clean()
         elif dice == 1:
             self.work()
         elif dice == 2:
@@ -73,23 +92,24 @@ class House:
     def __init__(self):
         self.food = 10
         self.money = 50
+        self.cat_food = 0
+        self.dirt = 0
 
     def __str__(self):
-        return 'В доме еды осталось {}, денег осталось {}'.format(self.food, self.money)
+        return 'В доме еды осталось {}, денег осталось {}.\n' \
+               'Кошачего корма осталось {}, степень загрязненности - {}'.format(
+                self.food, self.money, self.cat_food, self.dirt)
 
 
-class Animal:
+class Cat:
 
     def __init__(self, name):
         self.name = name
         self.house = None
-        self.owner = None
-        self.stamina = 50
         self.fullness = 50
 
     def __str__(self):
-        return 'Сытость {}а - {}, вынослиивость - {}'.format(
-            self.name, self.fullness, self.stamina)
+        return 'Сытость {}а - {}'.format(self.name, self.fullness)
 
     def go_into_the_house(self, house):
         self.house = house
@@ -97,23 +117,17 @@ class Animal:
 
     def eat(self):
         self.fullness += 20
-        self.owner = random.choice(citizens)
-        cprint('{} покормил {}а'.format(self.owner.name, self.name), color='cyan')
+        self.house.cat_food -= 10
+        cprint('{} поел'.format(self.name), color='cyan')
 
-    def play(self):
-        self.stamina -= 10
+    def turn_up_walls(self):
         self.fullness -= 10
-        self.owner = random.choice(citizens)
-        cprint('{} поиграл с {}ом'.format(self.owner.name, self.name), color='cyan')
-
-    def catch(self):
-        self.stamina -= 10
-        self.fullness -= 10
-        cprint('{} ловил мышей, но ни одной не поймал'.format(self.name), color='cyan')
+        self.house.dirt += 5
+        cprint('{} подрал обои'.format(self.name), color='cyan')
 
     def sleep(self):
-        self.stamina += 20
-        cprint('{} весь день спал'.format(self.name), color='cyan')
+        self.fullness -= 10
+        cprint('{} немного поспал'.format(self.name), color='cyan')
 
     def act(self):
         if self.fullness <= 0:
@@ -121,14 +135,12 @@ class Animal:
             return
         if self.fullness < 20:
             self.eat()
-        elif self.stamina < 20:
-            self.sleep()
         else:
             dice = random.randint(0, 2)
             if dice == 0:
-                self.catch()
+                self.sleep()
             else:
-                self.play()
+                self.turn_up_walls()
 
 
 citizens = [
@@ -141,10 +153,10 @@ my_sweet_home = House()
 for citizen in citizens:
     citizen.go_into_the_house(house=my_sweet_home)
 
-cat = Animal(name='Мурзик')
-cat.go_into_the_house(house=my_sweet_home)
+cat = Cat(name='Мурзик')
+random.choice(citizens).get_cat(cat)
 
-for day in range(1, 21):
+for day in range(1, 366):
     print('===================== день {} ====================='.format(day))
     for citizen in citizens:
         citizen.act()
@@ -155,6 +167,3 @@ for day in range(1, 21):
     print(cat)
     print(my_sweet_home)
 
-# Создадим двух людей, живущих в одном доме - Бивиса и Батхеда
-# Нужен класс Дом, в нем должн быть холодильник с едой и тумбочка с деньгами
-# Еда пусть хранится в холодильнике в доме, а деньги - в тумбочке.
