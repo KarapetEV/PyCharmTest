@@ -69,9 +69,9 @@ class Man:
             cprint('{} умер...'.format(self.name), color='red')
             return
         dice = random.randint(1, 6)
-        if self.fullness < 20:
+        if self.fullness <= 20:
             self.eat()
-        elif self.house.food < 10:
+        elif self.house.food < 30:
             self.shopping()
         elif self.house.money < 50:
             self.work()
