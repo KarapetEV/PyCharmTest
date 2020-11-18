@@ -122,7 +122,6 @@ class Wife(Man):
             cprint('{} сходила в магазин.'.format(self.name), color='magenta')
         else:
             cprint('{} хотела сходить в магазин, но нет денег.'.format(self.name), color='magenta')
-        Man.total_food += 50
 
     def buy_fur_coat(self):
         if self.house.money >= 370:
