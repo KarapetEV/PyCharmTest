@@ -122,7 +122,6 @@ class Wife(Man):
             cprint('{} сходила в магазин.'.format(self.name), color='magenta')
         else:
             cprint('{} хотела сходить в магазин, но нет денег.'.format(self.name), color='magenta')
-        Man.total_food += 50
 
     def buy_fur_coat(self):
         if self.house.money >= 370:
@@ -147,7 +146,7 @@ home = House()
 serge = Husband(name='Сережа', house=home)
 masha = Wife(name='Маша', house=home)
 
-for day in range(1, 10):
+for day in range(1, 366):
     cprint('================== День {} =================='.format(day), color='red')
     serge.act()
     masha.act()
