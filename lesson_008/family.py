@@ -53,6 +53,7 @@ class Man:
 
 class Husband(Man):
     total_money = 0
+    wot_days = 0
 
     def __init__(self, name, house):
         super().__init__(name=name, house=house)
@@ -85,6 +86,7 @@ class Husband(Man):
         self.fullness -= 10
         self.happiness += 20
         cprint('{} играл в танки.'.format(self.name), color='blue')
+        Husband.wot_days += 1
 
 
 class Wife(Man):
@@ -157,3 +159,5 @@ for day in range(1, 366):
 cprint('================== Итог ==================', color='red')
 cprint('Всего заработано денег: {} | съедено еды: {} | куплено шуб: {}'.format(
     Husband.total_money, Man.total_food, Wife.total_fur_coat), color='cyan')
+cprint('{} играл в танки {} дней'.format(
+    serge.name, Husband.wot_days), color='cyan')
