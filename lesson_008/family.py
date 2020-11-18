@@ -14,6 +14,7 @@ class House:
 
 
 class Man:
+    total_food = 0
 
     def __init__(self, name, house):
         self.name = name
@@ -34,7 +35,7 @@ class Man:
             else:
                 cprint('{} умерла...'.format(self.name), color='red')
             return
-        elif self.fullness < 10:
+        elif self.fullness <= 10:
             self.eat()
         else:
             return True
@@ -47,9 +48,11 @@ class Man:
             cprint('{} съел {} еды.'.format(self.name, self.food_count), color='blue')
         else:
             cprint('{} съела {} еды.'.format(self.name, self.food_count), color='magenta')
+        Man.total_food += self.food_count
 
 
 class Husband(Man):
+    total_money = 0
 
     def __init__(self, name, house):
         super().__init__(name=name, house=house)
@@ -76,6 +79,7 @@ class Husband(Man):
         self.fullness -= 10
         self.house.money += 150
         cprint('{} сходил на работу.'.format(self.name), color='blue')
+        Husband.total_money += 150
 
     def gaming(self):
         self.fullness -= 10
@@ -84,6 +88,7 @@ class Husband(Man):
 
 
 class Wife(Man):
+    total_fur_coat = 0
 
     def __init__(self, name, house):
         super().__init__(name=name, house=house)
@@ -117,6 +122,7 @@ class Wife(Man):
             cprint('{} сходила в магазин.'.format(self.name), color='magenta')
         else:
             cprint('{} хотела сходить в магазин, но нет денег.'.format(self.name), color='magenta')
+        Man.total_food += 50
 
     def buy_fur_coat(self):
         if self.house.money >= 370:
@@ -124,6 +130,7 @@ class Wife(Man):
             self.house.money -= 350
             self.happiness += 60
             cprint('{} купила себе шубу.'.format(self.name), color='magenta')
+            Wife.total_fur_coat += 1
         else:
             cprint('{} хотела купить себе шубу, но не хватило денег.'.format(self.name), color='magenta')
 
@@ -148,3 +155,6 @@ for day in range(1, 10):
     cprint(serge, color='yellow')
     cprint(masha, color='yellow')
     cprint(home, color='cyan')
+cprint('================== Итог ==================', color='red')
+cprint('Всего заработано денег: {} | съедено еды: {} | куплено шуб: {}'.format(
+    Husband.total_money, Man.total_food, Wife.total_fur_coat), color='cyan')
