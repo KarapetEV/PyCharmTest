@@ -50,6 +50,13 @@ class Man:
             cprint('{} съела {} еды.'.format(self.name, self.food_count), color='magenta')
         Man.total_food += self.food_count
 
+    def pet_the_cat(self):
+        self.happiness += 5
+        if isinstance(self, Husband):
+            cprint('{} весь день гладил кота.'.format(self.name, self.food_count), color='blue')
+        else:
+            cprint('{} весь день гладила кота.'.format(self.name, self.food_count), color='magenta')
+
 
 class Husband(Man):
     total_money = 0
@@ -70,8 +77,10 @@ class Husband(Man):
                 self.eat()
             elif dice == 2:
                 self.work()
-            else:
+            elif dice == 3:
                 self.gaming()
+            else:
+                super().pet_the_cat()
 
     def eat(self):
         super().eat()
@@ -101,7 +110,7 @@ class Wife(Man):
 
     def act(self):
         if super().act():
-            dice = randint(1, 4)
+            dice = randint(1, 5)
             if self.house.food < 20:
                 self.shopping()
             elif dice == 1:
@@ -110,8 +119,10 @@ class Wife(Man):
                 self.shopping()
             elif dice == 3:
                 self.buy_fur_coat()
-            else:
+            elif dice == 4:
                 self.clean_house()
+            else:
+                super().pet_the_cat()
 
     def eat(self):
         super().eat()
@@ -144,9 +155,25 @@ class Wife(Man):
         cprint('{} сделала уборку на {} единиц грязи.'.format(self.name, self.dirt_count), color='magenta')
 
 
+class Cat:
+
+    def __init__(self, name):
+        self.name = name
+
+    def eat(self):
+        pass
+
+    def sleep(self):
+        pass
+
+    def turn_up_walls(self):
+        pass
+
+
 home = House()
 serge = Husband(name='Сережа', house=home)
 masha = Wife(name='Маша', house=home)
+barsik = Cat(name='Барсик')
 
 for day in range(1, 366):
     cprint('================== День {} =================='.format(day), color='red')
