@@ -80,10 +80,7 @@ class Husband(Man):
             if self.fullness <= 20:
                 self.eat()
             elif self.happiness < 20:
-                if not self.gaming():
-                    self.pet_the_cat()
-                else:
-                    self.gaming()
+                self.gaming()
             elif self.house.money < 20:
                 self.work()
             elif dice == 1:
@@ -133,8 +130,6 @@ class Wife(Man):
             elif self.happiness <= 20:
                 if not self.buy_fur_coat():
                     self.pet_the_cat()
-                else:
-                    self.buy_fur_coat()
             elif self.house.food < 20 or self.house.cat_food < 10:
                 self.shopping()
             elif self.house.dirt >= 150:
@@ -144,7 +139,8 @@ class Wife(Man):
             elif dice == 2:
                 self.shopping()
             elif dice == 3:
-                self.buy_fur_coat()
+                if not self.buy_fur_coat():
+                    super().pet_the_cat()
             elif dice == 4:
                 super().pet_the_cat()
             else:
