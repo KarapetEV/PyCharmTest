@@ -182,6 +182,40 @@ class Wife(Man):
         cprint('{} сделала уборку на {} единиц грязи.'.format(self.name, self.dirt_count), color='magenta')
 
 
+class Child(Man):
+
+    def __init__(self, name):
+        super().__init__(name=name)
+        self.name = name
+        self. happiness = 100
+        self.food_count = 0
+
+    def __str__(self):
+        return super().__str__()
+
+    def act(self):
+        dice = randint(1, 2)
+        if self.fullness < 10:
+            self.eat()
+        elif dice == 1:
+            self.sleep()
+        else:
+            self.eat()
+
+    def eat(self):
+        self.food_count = randint(1, 10)
+        if self.food_count > self.house.food:
+            self.food_count = self.house.food
+        self.house.food -= self.food_count
+        self.fullness += self.food_count
+        cprint('Малыш {} съел {} еды.'.format(self.name, self.food_count), color='green')
+        Man.total_food += self.food_count
+
+    def sleep(self):
+        self.fullness -= 10
+        cprint('Малыш {} весь день спал.'.format(self.name), color='green')
+
+
 class Cat:
 
     def __init__(self, name):
@@ -230,6 +264,7 @@ class Cat:
 home = House()
 serge = Husband(name='Сережа')
 masha = Wife(name='Маша')
+kolya = Child(name='Коля')
 barsik = Cat(name='Барсик')
 serge.move_to_house(house=home)
 masha.move_to_house(house=home)
@@ -239,9 +274,11 @@ for day in range(1, 366):
     cprint('================== День {} =================='.format(day), color='red')
     serge.act()
     masha.act()
+    kolya.act()
     barsik.act()
     cprint(serge, color='yellow')
     cprint(masha, color='yellow')
+    cprint(kolya, color='yellow')
     cprint(barsik, color='yellow')
     home.dirt += 5
     cprint(home, color='cyan')
