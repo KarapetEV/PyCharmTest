@@ -8,7 +8,7 @@ class House:
         self.money = 100
         self.food = 50
         self.dirt = 0
-        self.cat_food = 30
+        self.cat_food = 50
 
     def __str__(self):
         return 'Денег: {} | Еды: {} | Степень загрязненности: {} | Кошачего корма: {}'.format(
@@ -130,7 +130,7 @@ class Wife(Man):
             elif self.happiness <= 20:
                 if not self.buy_fur_coat():
                     self.pet_the_cat()
-            elif self.house.food < 20 or self.house.cat_food < 10:
+            elif self.house.food < 20 or self.house.cat_food <= 10:
                 self.shopping()
             elif self.house.dirt >= 150:
                 self.clean_house()
@@ -157,7 +157,7 @@ class Wife(Man):
             self.fullness -= 10
             self.house.money -= 60
             self.house.food += 50
-            self.house.cat_food += 10
+            self.house.cat_food += 50
             cprint('{} сходила в магазин за продуктами.'.format(self.name), color='magenta')
         else:
             cprint('{} хотела сходить в магазин за продуктами, но денег не хватило.'.format(self.name), color='magenta')
@@ -194,21 +194,24 @@ class Child(Man):
         return super().__str__()
 
     def act(self):
-        dice = randint(1, 2)
+        dice = randint(1, 3)
         if self.fullness < 10:
             self.eat()
-        elif dice == 1:
+        elif dice == 1 or dice == 3:
             self.sleep()
         else:
             self.eat()
 
     def eat(self):
-        self.food_count = randint(1, 10)
-        if self.food_count > self.house.food:
-            self.food_count = self.house.food
-        self.house.food -= self.food_count
-        self.fullness += self.food_count
-        cprint('Малыш {} съел {} еды.'.format(self.name, self.food_count), color='green')
+        if self.house.food > 0:
+            self.food_count = randint(1, 10)
+            if self.food_count > self.house.food:
+                self.food_count = self.house.food
+            self.house.food -= self.food_count
+            self.fullness += self.food_count
+            cprint('Малыш {} съел {} еды.'.format(self.name, self.food_count), color='green')
+        else:
+            cprint('Малыш {} проголодался, но еда закончилась.'.format(self.name), color='green')
         Man.total_food += self.food_count
 
     def sleep(self):
@@ -225,17 +228,20 @@ class Cat:
         self.cat_fullness = 30
 
     def __str__(self):
-        return 'Кот {} - сытость: {}'.format(self.name, self.cat_fullness)
+        return '{} - сытость: {}'.format(self.name, self.cat_fullness)
 
     def move_to_house(self, house):
         self.house = house
         cprint('{} обрел новый дом!'.format(self.name), color='grey', on_color='on_white')
 
     def eat(self):
-        self.cat_food_count = randint(1, 11)
-        self.house.cat_food -= self.cat_food_count
-        self.cat_fullness += self.cat_food_count * 2
-        cprint('{} съел {} единиц кошачего корма.'.format(self.name, self.cat_food_count), color='white')
+        if self.house.cat_food > 0:
+            self.cat_food_count = randint(1, 10)
+            self.house.cat_food -= self.cat_food_count
+            self.cat_fullness += self.cat_food_count * 2
+            cprint('{} съел {} единиц кошачего корма.'.format(self.name, self.cat_food_count), color='white')
+        else:
+            cprint('{} проголодался, но закончился кошачий корм.'.format(self.name), color='white')
 
     def sleep(self):
         self.cat_fullness -= 10
@@ -265,21 +271,28 @@ home = House()
 serge = Husband(name='Сережа')
 masha = Wife(name='Маша')
 kolya = Child(name='Коля')
-barsik = Cat(name='Барсик')
 serge.move_to_house(house=home)
 masha.move_to_house(house=home)
-barsik.move_to_house(house=home)
+kolya.move_to_house(house=home)
+
+cats = []
+for number in range(1, 6):
+    cat = Cat(name='Кот №{}'.format(number))
+    cat.move_to_house(house=home)
+    cats.append(cat)
 
 for day in range(1, 366):
     cprint('================== День {} =================='.format(day), color='red')
     serge.act()
     masha.act()
     kolya.act()
-    barsik.act()
+    for cat in cats:
+        cat.act()
     cprint(serge, color='yellow')
     cprint(masha, color='yellow')
     cprint(kolya, color='yellow')
-    cprint(barsik, color='yellow')
+    for cat in cats:
+        cprint(cat, color='yellow')
     home.dirt += 5
     cprint(home, color='cyan')
 cprint('================== Итог ==================', color='red')
