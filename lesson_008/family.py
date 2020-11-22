@@ -102,7 +102,7 @@ class Husband(Man):
         self.fullness -= 10
         self.house.money += 150
         cprint('{} сходил на работу.'.format(self.name), color='blue')
-        Husband.total_money += 150
+        Husband.total_money += 50
 
     def gaming(self):
         self.fullness -= 10
@@ -245,6 +245,10 @@ class Cat:
             self.cat_fullness += self.cat_food_count * 2
             cprint('{} съел {} единиц кошачего корма.'.format(self.name, self.cat_food_count), color='white')
         else:
+            if self.cat_fullness > 10:
+                self.cat_fullness -= 10
+            else:
+                self.cat_fullness = 0
             cprint('{} проголодался, но закончился кошачий корм.'.format(self.name), color='white')
 
     def sleep(self):
@@ -259,6 +263,7 @@ class Cat:
     def act(self):
         if self.cat_fullness <= 0:
             cprint('{} сдох...'.format(self.name), color='red')
+            return
         else:
             dice = randint(1, 3)
             if self.cat_fullness <= 10:
