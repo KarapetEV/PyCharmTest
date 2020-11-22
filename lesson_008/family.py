@@ -33,8 +33,6 @@ class Man:
         cprint('{} въехал в новый дом!'.format(self.name), color='grey', on_color='on_white')
 
     def act(self):
-        if self.house.dirt > 90:
-            self.happiness -= 10
         if self.fullness <= 0 or self.happiness <= 0:
             if isinstance(self, Husband):
                 cprint('{} умер...'.format(self.name), color='red')
@@ -45,7 +43,7 @@ class Man:
             return True
 
     def eat(self):
-        self.food_count = randint(1, 30)
+        self.food_count = randint(10, 30)
         if self.food_count > self.house.food:
             self.food_count = self.house.food
         self.house.food -= self.food_count
@@ -57,11 +55,11 @@ class Man:
         Man.total_food += self.food_count
 
     def pet_the_cat(self):
-        self.happiness += 10
+        self.happiness += 30
         if isinstance(self, Husband):
-            cprint('{} весь день гладил кота.'.format(self.name), color='blue')
+            cprint('{} весь день гладил котов.'.format(self.name), color='blue')
         else:
-            cprint('{} весь день гладила кота.'.format(self.name), color='magenta')
+            cprint('{} весь день гладила котов.'.format(self.name), color='magenta')
 
 
 class Husband(Man):
@@ -79,9 +77,9 @@ class Husband(Man):
             dice = randint(1, 4)
             if self.fullness <= 20:
                 self.eat()
-            elif self.happiness < 20:
+            elif self.happiness <= 20:
                 self.gaming()
-            elif self.house.money < 20:
+            elif self.house.money < 60:
                 self.work()
             elif dice == 1:
                 self.eat()
@@ -91,6 +89,8 @@ class Husband(Man):
                 self.gaming()
             else:
                 super().pet_the_cat()
+        if self.house.dirt > 90:
+            self.happiness -= 10
 
     def eat(self):
         if self.house.food > 0:
@@ -127,10 +127,10 @@ class Wife(Man):
             dice = randint(1, 5)
             if self.fullness <= 20:
                 self.eat()
-            elif self.happiness <= 20:
+            elif self.happiness < 20:
                 if not self.buy_fur_coat():
                     self.pet_the_cat()
-            elif self.house.food < 20 or self.house.cat_food <= 10:
+            elif self.house.food < 20 or self.house.cat_food <= 50:
                 self.shopping()
             elif self.house.dirt >= 150:
                 self.clean_house()
@@ -145,6 +145,8 @@ class Wife(Man):
                 super().pet_the_cat()
             else:
                 self.clean_house()
+        if self.house.dirt > 90:
+            self.happiness -= 10
 
     def eat(self):
         if self.house.food > 0:
@@ -174,7 +176,7 @@ class Wife(Man):
             return False
 
     def clean_house(self):
-        self.dirt_count = randint(1, 100)
+        self.dirt_count = randint(10, 100)
         if self.dirt_count > self.house.dirt:
             self.dirt_count = self.house.dirt
         self.fullness -= 10
@@ -195,7 +197,7 @@ class Child(Man):
 
     def act(self):
         dice = randint(1, 3)
-        if self.fullness < 10:
+        if self.fullness <= 10:
             self.eat()
         elif dice == 1 or dice == 3:
             self.sleep()
@@ -237,6 +239,8 @@ class Cat:
     def eat(self):
         if self.house.cat_food > 0:
             self.cat_food_count = randint(1, 10)
+            if self.cat_food_count > self.house.cat_food:
+                self.cat_food_count = self.house.cat_food
             self.house.cat_food -= self.cat_food_count
             self.cat_fullness += self.cat_food_count * 2
             cprint('{} съел {} единиц кошачего корма.'.format(self.name, self.cat_food_count), color='white')
@@ -276,7 +280,7 @@ masha.move_to_house(house=home)
 kolya.move_to_house(house=home)
 
 cats = []
-for number in range(1, 6):
+for number in range(1, 4):
     cat = Cat(name='Кот №{}'.format(number))
     cat.move_to_house(house=home)
     cats.append(cat)
